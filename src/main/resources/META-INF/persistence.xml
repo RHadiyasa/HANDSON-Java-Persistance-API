@@ -4,12 +4,17 @@
              version="2.0">
 
     <persistence-unit name="example_jpa">
-        <mapping-file>META-INF/user_mapping.xml</mapping-file>
+<!--        <mapping-file>META-INF/user_mapping.xml</mapping-file>-->
+
+        <!-- Menambahkan entity sebagai anotation -->
+        <class>com.hadiyasa.example_jpa.entity.User</class>
+
         <properties>
             <!-- Database Connection-->
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/rrsh"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
             <property name="jakarta.persistence.jdbc.password" value="root"/>
+
             <!-- Hibernate = untuk munculin SQLnya -->
             <property name="hibernate.show_sql" value="true"/>
         </properties>

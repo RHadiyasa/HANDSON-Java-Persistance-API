@@ -33,16 +33,32 @@ public class Main {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("example_jpa");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
+        /**
+         * Method CRUD dari entity manager
+         * 1. persist() : Menyimpan data ke database
+         * 2. merge()   : Update data ke database
+         * 3. remove()  : Remove data
+         * */
+        // Create object User
+        User user = new User(null, "Rani", 634000);
+
         // input data -> Buat transaction
         entityManager.getTransaction().begin(); // START TRANSACTION
 
-        // Create object User
-        User eja = new User("C004", "Eja", 150000);
-        // Save object to database
-        entityManager.persist(eja);
+        /** Save object to database*/
+         entityManager.persist(user);
+
+        /** Update object to database*/
+        // entityManager.merge(user);
+
+        /** Delete Data */
+          /*User currentUser = entityManager.find(User.class, 5); // ID dari user di atas
+          entityManager.remove(currentUser);*/
 
         //Commit transaction
         entityManager.getTransaction().commit();
+
+        /**------------------------------------------------------*/
 
         // Query to database
         // Criteria Builder -> Object untuk membangun SQL Command (SELECT * FROM...)
