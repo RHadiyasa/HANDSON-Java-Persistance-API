@@ -34,7 +34,7 @@ public class User {
     }
 
     public User() {
-        // ini wajib ada, supaya nanti ORM bisa membuat object tanpa parameter
+        // ini wajib ada, supaya nanti ORM bisa membuat object tanpa parameter.
     }
 
     public String getId() {
