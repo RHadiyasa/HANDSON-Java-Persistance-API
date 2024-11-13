@@ -24,8 +24,16 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String name;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "user_balance")
     private Integer balance;
+
+    // Cascade : Menentukan bagaimana tindakan pada entitas utama (User) akan mempengaruhi entitas (UserProfile)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "user_profile_id", unique = true)
+    private UserProfile userProfile;
 
     public User(String id, String name, Integer balance) {
         this.id = id;
@@ -59,6 +67,15 @@ public class User {
 
     public void setBalance(Integer balance) {
         this.balance = balance;
+    }
+
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.hadiyasa.example_jpa.entity.User;
 import com.hadiyasa.example_jpa.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -40,6 +41,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User userDetails(String id) {
+        return entityManager.find(User.class, id);
+    }
+
+    @Override
+    public User findByUsernameAndPassword(String username, String password) {
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.name = :username AND u.password = :password", User.class)
+                    .setParameter("username", username)
+                    .setParameter("password",password)
+                    .getSingleResult();
+        }catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
     public List<User> findAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
@@ -60,10 +78,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(String id) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        User currentUser = entityManager.find(User.class, user.getId());
+        User currentUser = entityManager.find(User.class, id);
         // check apakah ID nya ada?
         if (currentUser != null) {
             entityManager.remove(currentUser);

@@ -8,6 +8,7 @@
 
         <!-- Menambahkan entity sebagai anotation -->
         <class>com.hadiyasa.example_jpa.entity.User</class>
+        <class>com.hadiyasa.example_jpa.entity.UserProfile</class>
 
         <properties>
             <!-- Database Connection-->
@@ -17,6 +18,9 @@
 
             <!-- Hibernate = untuk munculin SQLnya -->
             <property name="hibernate.show_sql" value="true"/>
+
+            <!-- Hibernate akan otomatis membuat tabel user_profile jika belum ada -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
     </persistence-unit>
 </persistence>

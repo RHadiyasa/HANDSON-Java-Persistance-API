@@ -1,10 +1,8 @@
 package com.hadiyasa.example_jpa;
 
 import com.hadiyasa.example_jpa.entity.User;
+import com.hadiyasa.example_jpa.entity.UserProfile;
 import com.hadiyasa.example_jpa.repository.UserRepository;
-import com.hadiyasa.example_jpa.repository.impl.UserRepositoryImpl;
-import com.hadiyasa.example_jpa.util.JpaUtil;
-import jakarta.persistence.EntityManager;
 
 import java.util.List;
 import java.util.Scanner;
@@ -28,13 +26,14 @@ public class Menu {
             System.out.println("3. Update User");
             System.out.println("4. View Users");
             System.out.println("5. Delete User");
-            System.out.println("6. Exit");
+            System.out.println("6. View details");
+            System.out.println("0. Exit");
             System.out.print("Choose menu: ");
             int input = Integer.parseInt(scanner.nextLine());
 
             switch (input) {
                 case 1:
-                    System.out.println("Add User");
+                    System.out.println("Add new User");
                     addUser();
                     break;
                 case 2:
@@ -54,12 +53,62 @@ public class Menu {
                     deleteUser();
                     break;
                 case 6:
+                    System.out.println("View details");
+                    viewUserDetails();
+                    break;
+                case 0:
                     System.out.println("Exiting...");
                     return;
                 default:
                     System.out.println("Invalid input");
             }
         }
+    }
+
+    private void viewUserDetails(){
+        System.out.print("Enter UserProfile ID: ");
+        String id = scanner.nextLine();
+
+        User user = userRepository.userDetails(id);
+
+        if (user != null) {
+            System.out.println("ID: " + user.getId());
+            System.out.println("Name: " + user.getName());
+            System.out.println("Balance: " + user.getBalance());
+
+            if (user.getUserProfile() != null) {
+                System.out.println("Profile ID: " + user.getUserProfile().getId());
+                System.out.println("Account Number: " + user.getUserProfile().getAccountNumber());
+                System.out.println("Address: " + user.getUserProfile().getAddress());
+                System.out.println("Phone Number: " + user.getUserProfile().getPhoneNumber());
+            } else {
+                System.out.println("User profile is not set...");
+                System.out.print("Add detail profile?(Y/N): ");
+                String addDetail = scanner.nextLine();
+                if (addDetail.equalsIgnoreCase("Y")) {
+                    System.out.print("Add Account Number: ");
+                    String accountNumber = scanner.nextLine();
+                    System.out.print("Add Phone Number: ");
+                    String phoneNumber = scanner.nextLine();
+                    System.out.print("Add Address: ");
+                    String address = scanner.nextLine();
+
+                    UserProfile userProfile = new UserProfile();
+                    userProfile.setAccountNumber(accountNumber);
+                    userProfile.setAddress(address);
+                    userProfile.setPhoneNumber(phoneNumber);
+
+                    user.setUserProfile(userProfile); // set ke dalam column User
+                    userRepository.updateUser(user); // update user setelah memiliki userProfile
+
+                    System.out.println("User profile updated");
+                }
+            }
+        } else {
+            System.out.println("User does not exist...");
+        }
+
+        System.out.println("-".repeat(40));
     }
 
     private void updateUser(){
@@ -79,9 +128,7 @@ public class Menu {
         System.out.print("Enter ID: ");
         String id = scanner.nextLine();
 
-        User user = new User();
-        user.setId(id);
-        userRepository.deleteUser(user);
+        userRepository.deleteUser(id);
         System.out.println("User deleted...");
     }
 
@@ -120,15 +167,18 @@ public class Menu {
             System.out.println("There are no users");
         } else {
             System.out.println("There are " + users.size() + " users");
-            System.out.println("-".repeat(65));
-            System.out.printf("%-36s | %-10s | %-10s\n", "ID", "Name", "Balance");
-            System.out.println("-".repeat(65));
+            System.out.println("-".repeat(80));
+            System.out.printf("%-36s | %-10s | %-10s | %-10s\n", "ID", "Name", "Balance", "User Profile");
+            System.out.println("-".repeat(80));
             for (User user : users) {
-                System.out.printf("%-36s | %-10s | %-10s\n", user.getId(), user.getName(), user.getBalance());
+                String userProfileId = (user.getUserProfile() != null && user.getUserProfile().getId() != null)
+                        ? user.getUserProfile().getId()
+                        : "No Profile";
+                System.out.printf("%-36s | %-10s | %-10s | %-10s\n",
+                        user.getId(), user.getName(),
+                        user.getBalance(), userProfileId);
             }
-            System.out.println("-".repeat(65));
+            System.out.println("-".repeat(80));
         }
     }
-
-
 }
